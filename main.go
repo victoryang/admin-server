@@ -29,15 +29,23 @@ func RegisterHandlers (r *mux.Router, handlerFns ...handlerFunc) http.Handler {
 	return f
 }
 
-func serveLogin() {
-
+func serveLogin(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("handle login")
+	vars := mux.Vars(r)
+	auth := vars["Authorization"]
+	w.WriteHeader(http.StatusOK)
+	if auth == "" {
+		fmt.Fprintf(w, "auth fails")
+		return
+	}
+	fmt.Fprintf(w, "auth good")
 }
 
 func configureAdminHandler() http.Handler {
 	r := mux.NewRouter()
 	apiRouter := r.NewRoute().PathPrefix("/").Subrouter()
 	apiRouter.PathPrefix("/").Handler(http.StripPrefix("/", http.FileServer(http.Dir("static/"))))
-	//apiRouter.HandleFunc("/", serveLogin)
+	apiRouter.HandleFunc("/", serveLogin).Methods("GET").Queries("username", "pass")
 	/*TODO: get some status of controller back to admin*/
 	/*admin := apiRouter.PathPrefix("/admin").Subrouter()
 	admin.Methods("GET").Path("/usage").HandlerFunc(SetJwtMiddlewareFunc(getUsage))*/
