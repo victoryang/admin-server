@@ -29,15 +29,29 @@ func RegisterHandlers (r *mux.Router, handlerFns ...handlerFunc) http.Handler {
 	return f
 }
 
-func serveLogin() {
+func handleLogin(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("handle login")
+	vars := mux.Vars(r)
+	auth := vars["Authorization"]
+	w.WriteHeader(http.StatusOK)
+	if vars == "" {
+		fmt.Fprintf(w, "auth fails")
+		return
+	}
+	fmt.Fprintf(w, "auth good")
+}
 
+func handleHome(w http.ResponseWriter, r *http.Request) {
+	
 }
 
 func configureAdminHandler() http.Handler {
 	r := mux.NewRouter()
 	apiRouter := r.NewRoute().PathPrefix("/").Subrouter()
-	apiRouter.PathPrefix("/").Handler(http.StripPrefix("/", http.FileServer(http.Dir("static/"))))
-	//apiRouter.HandleFunc("/", serveLogin)
+	//apiRouter.HandleFunc("/", handleHome).Methods("GET")
+	apiRouter.PathPrefix("/").Handler(http.StripPrefix("/", http.FileServer(http.Dir("static/")))).Methods("Get")
+	apiRouter.HandleFunc("/", handleLogin).Methods("GET").Queries("username", "pass")
+	
 	/*TODO: get some status of controller back to admin*/
 	/*admin := apiRouter.PathPrefix("/admin").Subrouter()
 	admin.Methods("GET").Path("/usage").HandlerFunc(SetJwtMiddlewareFunc(getUsage))*/
@@ -61,12 +75,15 @@ func startAdminServer() {
 		MaxHeaderBytes: 1 << 20,
 	}
 
+	quit := make(chan bool)
 		// Configure TLS if certs are available.
-	err := adminServer.ListenAndServe()
-	if err!= nil {
-		fmt.Println("Admin server error.")
-	}
+	go func() {
+		adminServer.ListenAndServe()
+		quit<-
+	}()
 	fmt.Println("Admin server running...")
+	<-quit
+	fmt.Println("Admin server stop...")
 }
 
 func stopAdminServer() {
