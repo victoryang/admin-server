@@ -47,7 +47,7 @@ func handleHome(w http.ResponseWriter, r *http.Request) {
 
 func configureAdminHandler() http.Handler {
 	r := mux.NewRouter()
-	r.HandleFunc("/login", serveLogin).Methods("GET").Queries("username", "pass")
+	r.HandleFunc("/login", serveLogin).Methods("GET").Queries("username", "{username}","pass", "{pass}")
 	apiRouter := r.NewRoute().PathPrefix("/").Subrouter()
 	apiRouter.PathPrefix("/").Handler(http.StripPrefix("/", http.FileServer(http.Dir("static/"))))
 	
