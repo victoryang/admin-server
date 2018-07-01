@@ -36,10 +36,15 @@
         login=$.ajax({
             url:"/login",
             async:false,
+            dataType: "text",
             beforeSend: function (xhr) {
                 var token = 'Bearer t-7614f875-8423-4f20-a674-d7cf3096290e'
                 xhr.setRequestHeader('Authorization', token);
             },
+            success: function() {
+
+            },
+            error: function(){},
         });
     });
 
