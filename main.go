@@ -31,14 +31,12 @@ func RegisterHandlers (r *mux.Router, handlerFns ...handlerFunc) http.Handler {
 
 func serveLogin(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("handle login")
-	vars := mux.Vars(r)
-	username := vars["username"]
 	w.WriteHeader(http.StatusOK)
 	if username == "" {
 		fmt.Fprintf(w, "username is null")
 		return
 	}
-	fmt.Fprintf(w, username)
+	fmt.Fprintf(w, "login success")
 }
 
 func handleHome(w http.ResponseWriter, r *http.Request) {
@@ -47,7 +45,7 @@ func handleHome(w http.ResponseWriter, r *http.Request) {
 
 func configureAdminHandler() http.Handler {
 	r := mux.NewRouter()
-	r.HandleFunc("/login", serveLogin).Methods("GET").Queries("username", "{username}","pass", "{pass}")
+	r.HandleFunc("/login", serveLogin).Methods("GET")
 	apiRouter := r.NewRoute().PathPrefix("/").Subrouter()
 	apiRouter.PathPrefix("/").Handler(http.StripPrefix("/", http.FileServer(http.Dir("static/"))))
 	
