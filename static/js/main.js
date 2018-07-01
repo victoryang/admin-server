@@ -20,7 +20,7 @@
         return check;
     });*/
 
-    $('.login100-form-btn').click(
+    $('.login100-form-btn').click(function(){
         var check = true;
 
         for(var i=0; i<input.length; i++) {
@@ -41,7 +41,7 @@
                 xhr.setRequestHeader('Authorization', token);
             },
         });
-    );
+    });
 
     $('.validate-form .input100').each(function(){
         $(this).focus(function(){
