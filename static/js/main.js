@@ -7,7 +7,7 @@
     [ Validate ]*/
     var input = $('.validate-input .input100');
 
-    $('.validate-form').on('submit',function(){
+    /*$('.validate-form').on('submit',function(){
         var check = true;
 
         for(var i=0; i<input.length; i++) {
@@ -18,7 +18,30 @@
         }
 
         return check;
-    });
+    });*/
+
+    function tryLogin() {
+        var check = true;
+
+        for(var i=0; i<input.length; i++) {
+            if(validate(input[i]) == false){
+                showValidate(input[i]);
+                check=false;
+            }
+        }
+        if(check == false) {
+            return
+        }
+
+        login=$.ajax({
+            url:"/login",
+            async:false,
+            beforeSend: function (xhr) {
+                var token = 'Bearer t-7614f875-8423-4f20-a674-d7cf3096290e'
+                xhr.setRequestHeader('Authorization', token);
+            },
+        });
+    };
 
 
     $('.validate-form .input100').each(function(){
