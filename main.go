@@ -49,7 +49,6 @@ func configureAdminHandler() http.Handler {
 	r := mux.NewRouter()
 	r.HandleFunc("/login", serveLogin).Methods("GET").Queries("username", "{username}","pass", "{pass}")
 	apiRouter := r.NewRoute().PathPrefix("/").Subrouter()
-	apiRouter.PathPrefix("/").Handler(http.StripPrefix("/", http.FileServer(http.Dir("static/"))))
 	
 	/*TODO: get some status of controller back to admin*/
 	/*admin := apiRouter.PathPrefix("/admin").Subrouter()
@@ -60,6 +59,8 @@ func configureAdminHandler() http.Handler {
 	apiRouter.Path("/debug/symbol").HandlerFunc(pprof.Symbol)
 	apiRouter.Path("/debug/trace").HandlerFunc(pprof.Trace)
 	apiRouter.PathPrefix("/debug/pprof/").HandlerFunc(pprof.Index)
+
+	apiRouter.PathPrefix("/").Handler(http.StripPrefix("/", http.FileServer(http.Dir("static/"))))
 
 	return RegisterHandlers(r, handlerFns...)
 }
